@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Self-Checking Worksheet: Metric Units of Length</title>
+<style>
+:root{--navy:#203864;--blue:#d9eaf7;--pale:#f5f8fc;--green:#e3f5e8;--red:#fde8e7;--border:#c7d1df}
+*{box-sizing:border-box}body{font-family:Arial,sans-serif;margin:0;background:#f2f5f9;color:#202938;line-height:1.45}
+.wrap{max-width:900px;margin:24px auto;padding:18px}.sheet{background:#fff;border-radius:14px;padding:28px;box-shadow:0 5px 24px #18304b18}
+h1{text-align:center;color:var(--navy);font-size:27px;margin:0 0 8px}.intro{text-align:center;margin-bottom:20px;color:#536174}
+.tip{background:var(--blue);border-radius:10px;padding:14px 17px;margin:18px 0}.tip strong{color:var(--navy)}
+h2{font-size:18px;color:var(--navy);background:var(--blue);padding:9px 12px;border-radius:7px;margin-top:25px}
+.q{border:1px solid var(--border);border-radius:9px;padding:13px 15px;margin:12px 0;background:white}
+.q p{margin:0 0 9px;font-weight:600}.answer{width:190px;max-width:100%;padding:9px;border:1px solid #9aa8ba;border-radius:6px;font-size:16px}
+.options{display:grid;gap:7px}.options label{font-weight:400;display:block;padding:6px 8px;border-radius:5px;cursor:pointer}.options input{margin-right:8px}
+.feedback{font-size:14px;font-weight:600;margin-top:8px}.correct{background:var(--green)!important;border-color:#5ba56d}.wrong{background:var(--red)!important;border-color:#d96b66}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}.btn{border:0;border-radius:7px;padding:12px 18px;font-size:16px;font-weight:700;cursor:pointer}.primary{background:var(--navy);color:white}.secondary{background:#e8edf4;color:#24354d}
+#results{display:none;padding:18px;border:2px solid var(--navy);border-radius:10px;background:#f7faff;margin-top:20px}#score{font-size:24px;font-weight:bold;color:var(--navy)}
+.name{padding:9px;border:1px solid #9aa8ba;border-radius:6px;width:min(320px,100%);font-size:15px}
+footer{text-align:center;color:#697789;font-size:12px;margin-top:20px}
+@media(max-width:600px){.wrap{padding:8px;margin:8px auto}.sheet{padding:16px}h1{font-size:22px}.answer{width:100%}}
+@media print{body{background:white}.wrap{margin:0;padding:0}.sheet{box-shadow:none;padding:10px}.actions{display:none}.q{break-inside:avoid}}
+</style>
+</head>
+<body><div class="wrap"><main class="sheet">
+<h1>Metric Units of Length</h1>
+<div class="intro">Interactive self-checking worksheet · 30 questions</div>
+<label for="student"><strong>Student name:</strong></label> <input id="student" class="name" placeholder="Enter your name (optional)">
+<div class="tip"><strong>Concept Tip Box</strong><br>
+1 km = 1,000 m &nbsp; | &nbsp; 1 hm = 100 m &nbsp; | &nbsp; 1 dam = 10 m<br>
+1 m = 10 dm = 100 cm = 1,000 mm<br>
+To convert a fraction of a unit, multiply the fraction by the equivalent number of smaller units.<br>
+Example: 1/2 m = 1/2 × 100 = 50 cm. Use a decimal or fraction where needed; units are shown in each question.
+</div>
+<div id="questions"></div>
+<div class="actions"><button class="btn primary" onclick="checkAnswers()">Check my answers</button><button class="btn secondary" onclick="resetWorksheet()">Try again</button><button class="btn secondary" onclick="window.print()">Print worksheet</button></div>
+<div id="results" aria-live="polite"><div id="score"></div><p id="message"></p><p>Incorrect answers are highlighted in red. Correct answers are highlighted in green, with the expected answer shown underneath.</p></div>
+<footer>Metric Units of Length · Work carefully and check your conversions.</footer>
+</main></div>
+<script>
+const qs = [
+{type:"text",q:"1. 3/4 meter = _____ centimeters",a:["75","75 cm"],show:"75 cm"},
+{type:"text",q:"2. 1/2 kilometer = _____ meters",a:["500","500 m"],show:"500 m"},
+{type:"text",q:"3. 2/5 meter = _____ millimeters",a:["400","400 mm"],show:"400 mm"},
+{type:"text",q:"4. 4/10 decameter = _____ meters",a:["4","4 m"],show:"4 m"},
+{type:"text",q:"5. 5/8 hectometer = _____ decameters",a:["6.25","6.25 dam","25/4"],show:"6.25 dam"},
+{type:"text",q:"6. 3/5 kilometer = _____ meters",a:["600","600 m"],show:"600 m"},
+{type:"text",q:"7. 7/10 meter = _____ centimeters",a:["70","70 cm"],show:"70 cm"},
+{type:"text",q:"8. 9/20 meter = _____ millimeters",a:["450","450 mm"],show:"450 mm"},
+{type:"text",q:"9. 3/4 decimeter = _____ millimeters",a:["75","75 mm"],show:"75 mm"},
+{type:"text",q:"10. 2/5 hectometer = _____ meters",a:["40","40 m"],show:"40 m"},
+{type:"text",q:"11. 7/10 decameter = _____ centimeters",a:["700","700 cm"],show:"700 cm"},
+{type:"text",q:"12. 3/8 kilometer = _____ hectometers",a:["3.75","3.75 hm","15/4"],show:"3.75 hm"},
+{type:"text",q:"13. 6/10 meter = _____ decimeters",a:["6","6 dm"],show:"6 dm"},
+{type:"text",q:"14. 5/6 centimeter = _____ millimeters (round to 2 decimal places)",a:["8.33","8.33 mm","8.3"],show:"8.33 mm (approximately)"},
+{type:"text",q:"15. 1/4 hectometer = _____ decameters",a:["2.5","2.5 dam","5/2"],show:"2.5 dam"},
+{type:"mc",q:"16. Which is greater: 2/3 meter or 70 centimeters?",opts:["2/3 meter","70 centimeters","They are equal","Not enough information"],correct:1,show:"70 centimeters (2/3 m ≈ 66.67 cm)"},
+{type:"mc",q:"17. What is 7/8 meter in millimeters?",opts:["88 mm","875 mm","780 mm","8,750 mm"],correct:1,show:"875 mm"},
+{type:"mc",q:"18. How many centimeters are in 3/5 meter?",opts:["35 cm","60 cm","300 cm","0.6 cm"],correct:1,show:"60 cm"},
+{type:"mc",q:"19. Which is equal to 1/4 kilometer?",opts:["25 m","250 m","2,500 m","400 m"],correct:1,show:"250 m"},
+{type:"mc",q:"20. Which is the smallest length?",opts:["8 cm","75 mm","1 dm","0.09 m"],correct:1,show:"75 mm"},
+{type:"mc",q:"21. 3/10 hectometer is equal to:",opts:["3 m","30 m","300 m","0.3 m"],correct:1,show:"30 m"},
+{type:"mc",q:"22. Which is greater?",opts:["1/2 meter","45 centimeters","They are equal","Cannot be compared"],correct:0,show:"1/2 meter (50 cm)"},
+{type:"mc",q:"23. 6/10 decameter equals:",opts:["6 m","60 m","0.6 m","600 m"],correct:0,show:"6 m"},
+{type:"mc",q:"24. Which conversion is correct?",opts:["1 m = 10 cm","1 km = 100 m","1 dm = 100 mm","1 hm = 10 m"],correct:2,show:"1 dm = 100 mm"},
+{type:"mc",q:"25. Arrange from smallest to largest: 0.5 m, 45 cm, 600 mm.",opts:["45 cm, 0.5 m, 600 mm","0.5 m, 45 cm, 600 mm","600 mm, 0.5 m, 45 cm","45 cm, 600 mm, 0.5 m"],correct:0,show:"45 cm, 0.5 m, 600 mm"},
+{type:"text",q:"26. Write >, <, or = : 3/4 meter _____ 80 centimeters",a:["<","less than"],show:"< (75 cm is less than 80 cm)"},
+{type:"text",q:"27. Convert 2.5 meters into centimeters.",a:["250","250 cm"],show:"250 cm"},
+{type:"text",q:"28. Convert 1.2 kilometers into meters.",a:["1200","1,200","1200 m","1,200 m"],show:"1,200 m"},
+{type:"text",q:"29. Write 650 millimeters in centimeters.",a:["65","65 cm"],show:"65 cm"},
+{type:"text",q:"30. A ribbon is 3/5 meter long. How many centimeters long is it?",a:["60","60 cm"],show:"60 cm"}
+];
+const root=document.getElementById("questions");
+let lastChecked=false;
+function render(){
+ root.innerHTML="";
+ let part="";
+ qs.forEach((q,i)=>{
+   const n=i+1;
+   if(n===1) part="Part A: Fill in the blanks";
+   if(n===16) part="Part B: Multiple-choice questions";
+   if(n===26) part="Part C: Compare and convert";
+   if([1,16,26].includes(n)){const h=document.createElement("h2");h.textContent=part;root.appendChild(h);}
+   const card=document.createElement("section");card.className="q";card.id="q"+n;
+   const p=document.createElement("p");p.textContent=q.q;card.appendChild(p);
+   if(q.type==="text"){
+     const input=document.createElement("input");input.className="answer";input.type="text";input.id="a"+n;input.autocomplete="off";input.setAttribute("aria-label","Answer to question "+n);input.placeholder="Type your answer";card.appendChild(input);
+   }else{
+     const opts=document.createElement("div");opts.className="options";
+     q.opts.forEach((opt,j)=>{const lab=document.createElement("label");const inp=document.createElement("input");inp.type="radio";inp.name="a"+n;inp.value=j;lab.appendChild(inp);lab.appendChild(document.createTextNode(opt));opts.appendChild(lab);});
+     card.appendChild(opts);
+   }
+   const fb=document.createElement("div");fb.className="feedback";fb.id="f"+n;card.appendChild(fb);root.appendChild(card);
+ });
+}
+function norm(s){return String(s).toLowerCase().replace(/,/g,"").replace(/\s+/g,"").replace(/centimeters|centimeter|cm|millimeters|millimeter|mm|meters|meter|m|decameters|decameter|dam|hectometers|hectometer|hm|kilometers|kilometer|km|decimeters|decimeter|dm/g,"").replace(/−/g,"-");}
+function isCorrect(q,n){
+ if(q.type==="mc"){const sel=document.querySelector('input[name="a'+n+'"]:checked');return !!sel&&Number(sel.value)===q.correct;}
+ const raw=document.getElementById("a"+n).value.trim();if(!raw)return false;
+ const val=norm(raw);
+ return q.a.some(x=>norm(x)===val);
+}
+function checkAnswers(){
+ let score=0,unanswered=0;
+ qs.forEach((q,i)=>{const n=i+1,card=document.getElementById("q"+n),fb=document.getElementById("f"+n);card.classList.remove("correct","wrong");const ok=isCorrect(q,n);
+ if(q.type==="text"&&!document.getElementById("a"+n).value.trim())unanswered++;
+ if(q.type==="mc"&&!document.querySelector('input[name="a'+n+'"]:checked'))unanswered++;
+ if(ok){score++;card.classList.add("correct");fb.textContent="Correct!";}
+ else{card.classList.add("wrong");fb.textContent="Correct answer: "+q.show;}
+ });
+ const pct=Math.round(score/qs.length*100);document.getElementById("score").textContent="Your score: "+score+" / "+qs.length+" ("+pct+"%)";
+ let msg=pct===100?"Excellent! Every answer is correct.":pct>=80?"Great work! Review any answers highlighted in red.":pct>=50?"Good effort. Check the explanations and try again.":"Keep practising. Review the metric conversion box, then try again.";
+ if(unanswered)msg+=" You left "+unanswered+" question"+(unanswered===1?"":"s")+" unanswered.";
+ const name=document.getElementById("student").value.trim();if(name)msg="Well done, "+name+"! "+msg;
+ document.getElementById("message").textContent=msg;document.getElementById("results").style.display="block";document.getElementById("results").scrollIntoView({behavior:"smooth",block:"center"});lastChecked=true;
+}
+function resetWorksheet(){
+ qs.forEach((q,i)=>{const n=i+1,card=document.getElementById("q"+n),fb=document.getElementById("f"+n);card.classList.remove("correct","wrong");fb.textContent="";if(q.type==="text")document.getElementById("a"+n).value="";else document.querySelectorAll('input[name="a'+n+'"]').forEach(x=>x.checked=false);});
+ document.getElementById("results").style.display="none";lastChecked=false;window.scrollTo({top:0,behavior:"smooth"});
+}
+render();
+</script></body></html>
